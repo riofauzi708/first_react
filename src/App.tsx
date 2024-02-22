@@ -3,6 +3,7 @@ import Provinces from "./components/Provinces";
 import Regencies from "./components/Regencies";
 import Districts from "./components/Districts";
 import Villages from "./components/Villages";
+import './index.css';
 
 interface Province {
   id: string;
@@ -36,6 +37,25 @@ function App() {
     setSelectedRegency(null);
     setSelectedDistrict(null);
     setSelectedVillage(null);
+    setSelectedAll(null);
+  };
+
+  const handleRegencySelect = (regency: Regency | null) => {
+    setSelectedRegency(regency);
+    setSelectedDistrict(null);
+    setSelectedVillage(null);
+    setSelectedAll(null);
+  };
+
+  const handleDistrictSelect = (district: District | null) => {
+    setSelectedDistrict(district);
+    setSelectedVillage(null);
+    setSelectedAll(null);
+  };
+
+  const handleVillageSelect = (village: Village | null) => {
+    setSelectedVillage(village);
+    setSelectedAll(null);
   };
 
   const handleSelectAll = () => {
@@ -50,43 +70,56 @@ function App() {
   const isAllDataSelected = selectedProvince && selectedRegency && selectedDistrict && selectedVillage;
 
   return (
-    <div>
-      <h1>Data Wilayah Indonesia</h1>
-      <h2>Provinsi</h2>
-      <Provinces onProvinceSelect={handleProvinceSelect} />
-      {selectedProvince && (
+    <div className='bg-white max-sm:w-32'>
+    <div className="bg-slate-300 py-10 my-20 mx-40 rounded-lg">
+      <h1 className="container max-sm:w-52 pb-10 text-4xl font-bold text-center mx-auto bg-clip-text text-transparent bg-gradient-to-r from-red-800 to-red-100">DATA WILAYAH INDONESIA</h1>
+      <div className="bg-white rounded-lg mx-auto w-96">
+        <div className="shadow-lg p-4 mb-4">
+        <h2 className="text-lg font-bold mb-2">Provinsi</h2>
         <div>
-          <h2>Kabupaten</h2>
-          <Regencies provinceId={selectedProvince.id} onRegencySelect={setSelectedRegency} />
+          <Provinces onProvinceSelect={handleProvinceSelect} />
+          </div>
         </div>
-      )}
-      {selectedRegency && (
-        <div>
-          <h2>Kecamatan</h2>
-          <Districts regencyId={selectedRegency.id} onDistrictSelect={setSelectedDistrict} />
+        {selectedProvince && (
+          <div className="shadow-lg p-4 mb-4">
+            <h2 className="text-lg font-bold mb-2">Kabupaten</h2>
+            <div className="w-64">
+              <Regencies provinceId={selectedProvince.id} onRegencySelect={handleRegencySelect} />
+            </div>
+          </div>
+        )}
+        {selectedRegency && (
+          <div className="shadow-lg p-4 mb-4">
+            <h2 className="text-lg font-bold mb-2">Kecamatan</h2>
+            <div className="w-64">
+              <Districts regencyId={selectedRegency.id} onDistrictSelect={handleDistrictSelect} />
+            </div>
+          </div>
+        )}
+        {selectedDistrict && (
+          <div className="shadow-lg p-4 mb-4">
+            <h2 className="text-lg font-bold mb-2">Kelurahan</h2>
+            <Villages districtId={selectedDistrict.id} onVillageSelect={handleVillageSelect} />
+          </div>
+        )}
+        {isAllDataSelected && (
+          <div className="shadow-lg p-4 flex justify-end">
+          <button className="bg-black text-white px-4 py-2 rounded-md" onClick={handleSelectAll}>
+            Tampilkan Semua Data
+          </button>
         </div>
-      )}
-      {selectedDistrict && (
-        <div>
-          <h2>Kelurahan</h2>
-          <Villages districtId={selectedDistrict.id} onVillageSelect={setSelectedVillage} />
-        </div>
-      )}
-      {isAllDataSelected && (
-        <div>
-          <br></br>
-          <button onClick={handleSelectAll}>Tampilkan Semua Data</button>
-        </div>
-      )}
-      {selectedAll && (
-        <div>
-          <h2>Hasil</h2>
-          <p>Provinsi : {selectedAll.province.name}</p>
-          <p>Kabupaten : {selectedAll.regency.name}</p>
-          <p>Kecamatan : {selectedAll.district.name}</p>
-          <p>Desa/Kelurahan : {selectedAll.village.name}</p>
-        </div>
-      )}
+        )}
+        {selectedAll && (
+          <div className="shadow-lg p-4 mt-4 mb-4">
+            <h2 className="text-lg font-bold mb-2">Hasil</h2>
+            <p>Provinsi: {selectedAll.province.name}</p>
+            <p>Kabupaten: {selectedAll.regency.name}</p>
+            <p>Kecamatan: {selectedAll.district.name}</p>
+            <p>Desa/Kelurahan: {selectedAll.village.name}</p>
+          </div>
+        )}
+      </div>
+    </div>
     </div>
   );
 }
